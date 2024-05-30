@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchBreed, fetchPets } from "../store/pet/petStore";
-import { usePetStore } from "../store/pet/selector";
+import { selectAllBreeds, selectAllPets, selectTotalPages } from "../store/pet/selector";
 
 export function useHome() {
     const dispatch = useDispatch();
-    const breeds = usePetStore("breeds");
-    const pets = usePetStore("pets");
-    const totalPages = usePetStore("totalPages");
+    const breeds = useSelector(selectAllBreeds);
+    const pets = useSelector(selectAllPets);
+    const totalPages = useSelector(selectTotalPages);
     const [formValue, setFormValue] = useState({ animal: "", breed: "" });
-    const [isAnimalSelected, setIsAnimalSelected] = useState(false);
     const [pageNumber, setPageNumber] = useState(1);
+    const [isAnimalSelected, setIsAnimalSelected] = useState(false);
 
     useEffect(() => {
         dispatch(fetchPets({ pageNumber: pageNumber - 1, animal: formValue.animal, breed: formValue.breed }));
@@ -22,7 +22,6 @@ export function useHome() {
 
     function handleSubmit(e) {
         e.preventDefault();
-
         dispatch(fetchPets({ animal: formValue.animal, breed: formValue.breed }));
     }
 
@@ -52,7 +51,6 @@ export function useHome() {
             "breed": e.target.value
         }))
     }
-
 
     return { isAnimalSelected, formValue, breeds, pets, totalPages, handlePagination, handleSubmit, handleAnimalChange, handleBreedChange };
 }
